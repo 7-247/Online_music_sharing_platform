@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2 class="form-signin-heading">登 录</h2>
+<p>
+  还没注册? <a href="{{ url_for('register') }}"><u>点击一下就可以注册哦!</u></a>
+</p>
+<form class="form-signin" action="" method="post" novalidate="novalidate">
+  {{ form.hidden_tag() }} {{ form.username.label(class="sr-only") }}<br />
+  {{
+  form.username(size=32,class="form-control",placeholder="请输入用户名...")}}<br />
+  {% for error in form.username.errors %}
+  <span style="color: red">{{ error }}</span>
+  {% endfor %} {{ form.password.label(class="sr-only")}}<br />
+  {{
+  form.password(size=32,class="form-control",placeholder="请输入密码...")}}<br />
+  {% for error in form.password.errors %}
+  <span style="color: red">{{ error }}</span>
+  {% endfor %}
+  <div>{{ form.remember_me() }} {{ form.remember_me.label }}</div>
+  {{ form.submit(class="btn btn-lg btn-primary") }}
+</form>
+{% endblock %}

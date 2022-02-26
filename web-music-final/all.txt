@@ -1,0 +1,38 @@
+.
+└── web-music-main
+    └── app
+        ├── static
+        │   ├── css
+        │   │   ├── cover.css
+        │   │   ├── signin.css
+        │   │   ├── bootstrap.css
+        │   │   └── APlayer.min.css
+        │   ├── js
+        │   │   ├── randompic.js
+        │   │   ├── APlayer.min.js
+        │   │   ├── bootstrap.js
+        │   │   ├── jquery.min.js
+        │   │   ├── jquery.tmpl.js
+        │   │   └── song_sheet.js
+        │   └── resource
+        │       ├── cover
+        │       ├── flac
+        │       ├── mp3
+        │       ├── headpic
+        │       └── lrc
+        ├── templates
+        │   ├── base.html
+        │   ├── edit_profile.html
+        │   ├── index.html
+        │   ├── login.html
+        │   ├── register.html
+        │   └── user.html
+        ├── __init__.py
+        ├── find.py
+        ├── forms.py
+        ├── models.py
+        ├── music.py
+        ├── playerlist.py
+        ├── songsheet.py
+        └── routes.py
+    └── main.py

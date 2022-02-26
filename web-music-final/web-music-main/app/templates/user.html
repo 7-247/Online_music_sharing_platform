@@ -1,0 +1,237 @@
+{% extends "base.html" %} {% block content %}
+<link rel="stylesheet" href="../static/css/APlayer.min.css" />
+<script src="../static/js/song_sheet.js"></script>
+<script src="../static/js/randompic.js"></script>
+<script>
+  document.getElementById("uploadBtn").onchange = function () {
+    document.getElementById("uploadFile").value = this.files[0].name;
+    document.getElementById("uploadFile").style.color = "white";
+  };
+</script>
+<div class="col-md-12">
+<table>
+  <tr valign="top">
+    <td>
+      <img id="headpic" src="../static/resource/headpic/{{user.id}}.jpg" />
+    </td>
+    <td>
+      <h2>User: {{ user.username }}</h2>
+      {% if user.about_me %}
+      <p>{{ user.about_me }}</p>
+      {% endif %} {% if user.last_seen %}
+      <p>最近登录: {{ user.last_seen }}</p>
+      {% endif %} {% if user == current_user %}
+      <p><a href="{{ url_for('edit_profile') }}">个人资料编辑</a></p>
+      {% endif %}
+      <p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="add_song_sheet()"
+        >
+          <font size="1">新建歌单</font>
+        </button>
+      </p>
+      <p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="delete_song_sheet()"
+        >
+          <font size="1">删除歌单</font>
+        </button>
+      </p>
+      <!--<p>
+        <button type="button" class="btn btn-primary" onclick="randompic()">
+          <font size="1">随机头像</font>
+        </button>
+      </p>-->
+      <form action="" enctype="multipart/form-data" method="POST" onreset="myreset()">
+        <div>
+        <label id="realBtn" class="btn btn-info">
+          <input
+          id="uploadBtn"
+          type="file"
+          class="btn btn-primary"
+          name="musicfile"
+          required="required"
+          style="left:-9999px;position:absolute;"
+          onchange="change(this)"
+          />
+          <span id="text">选择上传音乐文件</span>
+        </label>
+        </div>
+        <div>
+        <input class="btn btn-primary" type="submit" value="提交" />
+        <input class="btn btn-primary" type="reset" value="重置"/>
+        </div>
+      </form>
+    </td>
+  </tr>
+</table>
+<div class="tabbable" id="tabs-779775">
+  <ul class="nav nav-tabs">
+    {% for i in range(posts_len) %}
+    <li>
+      <a href="#panel-{{i}}" data-toggle="tab">{{posts[i][0]}}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="tab-content">
+    {% for i in range(posts_len) %}
+    <div class="tab-pane" id="panel-{{i}}">
+      <table class="table" id="music_list-{{i}}">
+        <thead>
+          <tr>
+            <th>歌曲名</th>
+            <th>歌手名</th>
+            <th>播放</th>
+            {% if not current_user.is_anonymous %}
+            <th>加入歌单</th>
+            <th>移出歌单</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for music in posts[i][1] %}
+          <tr>
+            <th>{{music.music_name}}</th>
+            <th>{{music.singer_name}}</th>
+            <th>
+              <input
+                id="{{music.music_id}}"
+                name="play"
+                type="image"
+                src="../static/css/play.svg"
+                height="25"
+                width="25"
+                value="0"
+                onclick="player({{i}},{{music.music_id}})"
+              />
+            </th>
+            <th>
+              <button
+                class="btn btn-primary"
+                onclick="add_song({{music.music_id}})"
+              >
+                +
+              </button>
+            </th>
+            <th>
+              <button
+                class="btn btn-primary"
+                onclick="delete_song('{{posts[i][0]}}',{{music.music_id}})"
+              >
+                -
+              </button>
+            </th>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="col-md-12">
+  <div class="col-md-7">
+    <div id="aplayer" class="aplayer" value="0"></div>
+  </div>
+</div>
+</div>
+<script src="../static/js/APlayer.min.js"></script>
+<script>
+  var ap = new APlayer({
+      container: document.getElementById('aplayer'),
+      fixed: true,
+      lrcType: 3,
+  });
+  ap.on('pause',function(){
+    var s = document.getElementsByName("play");
+      for (var i = 0; i < s.length; i++) {
+        s[i].value = 0;
+        s[i].src = "../static/css/play.svg";
+      }
+  });
+  ap.on('play',function(){
+    var a = document.getElementById("aplayer");
+    var t = document.getElementById(a.value + "");
+    t.src = "../static/css/pause.svg";
+  });
+
+    function getrealindex(M,id) {
+      for(var i=0;i<M.length;i++)
+      {
+        if(M[i].music_id==id)return M[i];
+      }
+      return M[0];
+    }
+
+    var posts={{posts|safe}};
+    function player(i,id)
+    {
+      var M=posts[i][1];
+      console.log(M);
+      var t=document.getElementById(id);
+      if (t.value==1){
+          var a=document.getElementById("aplayer");
+          a.value=id;
+          t.value=0;
+          t.src="../static/css/play.svg"
+          ap.pause();
+        }
+      else{
+        var s=document.getElementsByName("play");
+        for (var i=0;i<s.length;i++)
+        {
+          s[i].value=0;
+          s[i].src="../static/css/play.svg";
+        }
+        t.value=1;
+        var a=document.getElementById("aplayer");
+        a.value=id;
+        TEP=getrealindex(M,id);
+        ap.destroy();
+        ap=new APlayer({
+          container: document.getElementById('aplayer'),
+          lrcType: 3,
+          audio: {
+              name: TEP.music_name,
+              fixed: true,
+              artist: TEP.singer_name,
+              url: "../static/resource/"+TEP.music_type+"/"+TEP.singer_name+" - "+TEP.music_name+"."+TEP.music_type,
+              cover: "../static/resource/cover/"+TEP.singer_name+" - "+TEP.music_name+".jpg",
+              lrc: "../static/resource/lrc/"+TEP.singer_name+" - "+TEP.music_name+".lrc"
+          }
+      });
+        ap.on('pause',function(){
+        var s = document.getElementsByName("play");
+          for (var i = 0; i < s.length; i++) {
+            s[i].value = 0;
+            s[i].src = "../static/css/play.svg";
+          }
+        });
+        ap.on('play',function(){
+        var a = document.getElementById("aplayer");
+        var t = document.getElementById(a.value + "");
+        t.src = "../static/css/pause.svg";
+        });
+        ap.play();
+        t.src="../static/css/pause.svg";
+    }
+  }
+
+    function change(obj)
+    {
+      var t=document.getElementById('text');
+      t.innerHTML=(obj.value).slice(12);
+    }
+    function myreset()
+    {
+      var t=document.getElementById('text');
+      t.innerHTML="选择上传音乐文件";
+    }
+</script>
+
+{% endblock %}

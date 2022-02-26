@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block content %}
+<h1>个人资料编辑</h1>
+
+<form action="/upload_pic" method="post" enctype="multipart/form-data"  onreset="myreset()">
+  <label id="realBtn" class="btn btn-info">
+    <input
+    id="uploadBtn"
+    type="file"
+    class="btn btn-primary"
+    name="picfile"
+    required="required"
+    style="left:-9999px;position:absolute;"
+    onchange="change(this)"
+    />
+    <span id="text">选择上传头像文件</span>
+  </label>
+    <input class="btn btn-primary" type="submit" value="提交" />
+    <input class="btn btn-primary" type="reset" value="重置" />
+</form>
+
+
+<form action="" method="post" >
+  {{ form.hidden_tag() }}
+  <br><br>
+  <div class="col-md-12">
+    <div class="col-md-5"></div>
+    <div class="col-md-2">
+    {{ form.username.label }}<br />
+    {{ form.username(size=32,class="form-control") }}<br />
+    {% for error in form.username.errors %}
+    <span style="color: red">[{{ error }}]</span>
+    {% endfor %}
+    </div>
+  </div>
+  <br>
+  <div class="col-md-12">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+    {{ form.about_me.label }}<br />
+    {{ form.about_me(cols=50, rows=4,class="form-control") }}<br />
+    {% for error in form.about_me.errors %}
+    <span style="color: red">[{{ error }}]</span>
+    {% endfor %}
+    <input class="btn btn-primary" type="submit" value="提交" />
+    <input class="btn btn-primary" type="reset" value="重置" />
+  </div>
+  </div>
+</form>
+
+<script>
+  function change(obj)
+    {
+      var t=document.getElementById('text');
+      t.innerHTML=(obj.value).slice(12);
+    }
+    function myreset()
+    {
+      var t=document.getElementById('text');
+      t.innerHTML="选择上传头像文件";
+    }
+</script>
+{% endblock %}

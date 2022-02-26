@@ -1,0 +1,20 @@
+由于mysql无法创建数据库，因此您可能需要在root下手动创建数据库
+数据库名：flaskmusicplayer
+密码：tongjigzy_02
+
+详细信息见web-music-main/app/__init__.py 下的第10-15行，即连接数据库的代码
+下面将其展示：
+/******************
+db = pw.MySQLDatabase('flaskmusicplayer',
+                      host='127.0.0.1',
+                      user='root',
+                      passwd='tongjigzy_02',
+                      charset='utf8',
+                      port=3306)
+******************/
+您也可以更改这6行代码，将密码、数据库名、端口等信息改为您的配置，即可运行代码
+
+联系方式：
+1951705 高曾谊 
+邮箱：1262454489@qq.com 
+电话：15975052629
